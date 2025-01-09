@@ -12,7 +12,7 @@ import path from "path";
 
 
 dotenv.config({});
-//https://e-learning-mxqj.onrender.com/  link to deploy
+https://e-learning-63v6.onrender.com  link to deploy
 // call database connection here
 connectDB();
 const app = express();
@@ -26,7 +26,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use(cors({
-    origin:["http://localhost:5173","https://e-learning-mxqj.onrender.com"],
+    origin:["http://localhost:5173","https://e-learning-63v6.onrender.com"],
     credentials:true
 }));
  

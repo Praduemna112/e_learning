@@ -1,0 +1,6 @@
+in this project mongodb for database 
+node js for backend
+react for frontend
+cloudinary for store images and video
+stripe for payment getway
+render for deploy  link is https://e-learning-mxqj.onrender.com/

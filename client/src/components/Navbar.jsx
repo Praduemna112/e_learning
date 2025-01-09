@@ -85,7 +85,14 @@ const Navbar = () => {
                 {user?.role === "instructor" && (
                   <>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem><Link className="bg-blue-600 text-white block py-1 px-4 cursor-pointer " to="/admin/dashboard">Dashboard</Link></DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <Link
+                        className="bg-blue-600 text-white block py-1 px-4 cursor-pointer "
+                        to="/admin/dashboard"
+                      >
+                        Dashboard
+                      </Link>
+                    </DropdownMenuItem>
                   </>
                 )}
               </DropdownMenuContent>
@@ -101,10 +108,11 @@ const Navbar = () => {
           <DarkMode />
         </div>
       </div>
+
       {/* Mobile device  */}
       <div className="flex md:hidden items-center justify-between px-4 h-full">
         <h1 className="font-extrabold text-2xl">E-learning</h1>
-        <MobileNavbar user={user}/>
+        <MobileNavbar user={user} />
       </div>
     </div>
   );
@@ -112,9 +120,25 @@ const Navbar = () => {
 
 export default Navbar;
 
-const MobileNavbar = ({user}) => {
+const MobileNavbar = ({ user }) => {
   const navigate = useNavigate();
-  
+  const [logoutUser, { data, isSuccess }] = useLogoutUserMutation();
+
+  const logoutHandler = async () => {
+    try {
+      await logoutUser();
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success(data?.message || "User logged out.");
+      navigate("/login");
+    }
+  }, [isSuccess, data, navigate]);
+
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -128,22 +152,33 @@ const MobileNavbar = ({user}) => {
       </SheetTrigger>
       <SheetContent className="flex flex-col">
         <SheetHeader className="flex flex-row items-center justify-between mt-2">
-          <SheetTitle> <Link to="/">E-Learning</Link></SheetTitle>
-          <DarkMode />
+          <SheetTitle>
+            <Link to="/">E-Learning</Link>
+          </SheetTitle>
+          <DarkMode /> {/* Restored themes button */}
         </SheetHeader>
         <Separator className="mr-2" />
         <nav className="flex flex-col space-y-4">
-          <Link to="/my-learning">My Learning</Link>
-          <Link to="/profile">Edit Profile</Link>
-          <p>Log out</p>
+          {user && (
+            <>
+              <Link to="/">Home</Link>
+              <Link to="/my-learning">My Learning</Link>
+              <Link to="/profile">Edit Profile</Link>
+              <p
+                className="cursor-pointer text-red-500"
+                onClick={logoutHandler}
+              >
+                Log out
+              </p>
+            </>
+          )}
+          {!user && (
+            <>
+              <Link to="/">Home</Link>
+              <Link to="/login">Login</Link>
+            </>
+          )}
         </nav>
-        {user?.role === "instructor" && (
-          <SheetFooter>
-            <SheetClose asChild>
-              <Button type="submit" onClick={()=> navigate("/admin/dashboard")}>Dashboard</Button>
-            </SheetClose>
-          </SheetFooter>
-        )}
       </SheetContent>
     </Sheet>
   );
